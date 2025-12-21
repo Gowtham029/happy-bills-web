@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HappyBills - Next-Gen Billing Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/app-logo.png">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <img src="assets/app-logo.png" alt="HappyBills" class="logo-image">
+                    <div class="logo-brand">
+                        <span class="brand-name">HappyBills</span>
+                        <span class="brand-tagline">Enterprise</span>
+                    </div>
+                </div>
+                <div class="nav-right">
+                    <ul class="nav-menu">
+                        <li><a href="index.html" class="nav-link active">Home</a></li>
+                        <li><a href="subscription.html" class="nav-link">Plans</a></li>
+                        <li><a href="contact.html" class="nav-link">Contact</a></li>
+                    </ul>
+                    <button class="login-btn" onclick="openLogin()">Login</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-bg"></div>
+            <div class="hero-container">
+                <div class="hero-content">
+                    <div class="hero-badge">🚀 Trusted by 500+ Enterprises</div>
+                    <h1 class="hero-title">
+                        Simple<br>
+                        <span class="gradient-text">Food Billing</span>
+                    </h1>
+                    <p class="hero-description">
+                        Create and manage bills for your food business with ease. 
+                        Perfect for restaurants, cafes, food trucks, and home kitchens.
+                    </p>
+                    <div class="hero-cta">
+                        <a href="app-release.apk" class="cta-primary" download>
+                            <img src="assets/app-logo.png" alt="App" class="cta-icon">
+                            <span>Download App</span>
+                        </a>
+                        <button class="cta-secondary" onclick="watchDemo()">
+                            <span class="play-icon">▶</span>
+                            Watch Demo
+                        </button>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    
+                    <div class="floating-card card-1">
+                        <div class="card-header">💳 Payment Processing</div>
+                        <div class="card-value">₹2.4M</div>
+                    </div>
+                    <div class="floating-card card-2">
+                        <div class="card-header">📊 Analytics</div>
+                        <div class="card-chart">📈</div>
+                    </div>
+                    <div class="floating-card card-3">
+                        <div class="card-header">🔒 Security</div>
+                        <div class="card-status">✅ Protected</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Perfect for Food Businesses</h2>
+                    <p class="section-subtitle">Everything you need to manage your food business billing</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature">
+                        <div class="feature-icon gradient-bg-1">🍽️</div>
+                        <h3>Menu Management</h3>
+                        <p>Add your food items, set prices, and manage your complete menu</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon gradient-bg-2">📱</div>
+                        <h3>Quick Billing</h3>
+                        <p>Generate bills instantly with itemized receipts and GST calculations</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon gradient-bg-3">📊</div>
+                        <h3>Sales Reports</h3>
+                        <p>Track your daily sales, popular items, and business performance</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon gradient-bg-4">🏪</div>
+                        <h3>Multi-Location</h3>
+                        <p>Manage multiple outlets, food trucks, or kitchen locations</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats">
+            <div class="container">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number">1000+</div>
+                        <div class="stat-label">Food Businesses</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">99.9%</div>
+                        <div class="stat-label">Uptime</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">₹10M+</div>
+                        <div class="stat-label">Bills Generated</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">Support</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeLogin()">&times;</span>
+            <div class="login-form">
+                <img src="assets/app-logo.png" alt="HappyBills" class="login-logo">
+                <div id="mobileStep">
+                    <h2>Welcome Back</h2>
+                    <p>Enter your mobile number to continue</p>
+                    <form onsubmit="sendOTP(event)">
+                        <input type="tel" id="mobileNumber" placeholder="Mobile Number" pattern="[0-9]{10}" maxlength="10" required>
+                        <button type="submit" class="login-submit">Send OTP</button>
+                    </form>
+                </div>
+                <div id="otpStep" style="display: none;">
+                    <h2>Verify OTP</h2>
+                    <p>Enter the 6-digit code sent to <span id="displayMobile"></span></p>
+                    <form onsubmit="verifyOTP(event)">
+                        <input type="text" id="otpCode" placeholder="Enter OTP" pattern="[0-9]{6}" maxlength="6" required>
+                        <button type="submit" class="login-submit">Verify OTP</button>
+                    </form>
+                    <div class="login-footer">
+                        <a href="#" onclick="resendOTP()">Resend OTP</a>
+                        <span>•</span>
+                        <a href="#" onclick="backToMobile()">Change Number</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <img src="assets/app-logo.png" alt="HappyBills" class="logo-image">
+                        <span class="brand-name">HappyBills</span>
+                    </div>
+                    <p>Simple billing solution for food businesses of all sizes</p>
+                </div>
+                <div class="footer-links">
+                    <div class="link-group">
+                        <h4>Product</h4>
+                        <a href="#">Features</a>
+                        <a href="#">Security</a>
+                        <a href="#">API</a>
+                    </div>
+                    <div class="link-group">
+                        <h4>Company</h4>
+                        <a href="#">About</a>
+                        <a href="#">Careers</a>
+                        <a href="#">Press</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 HappyBills. All rights reserved.</p>
+                <div class="compliance-badges">
+                    <span class="badge">SOC 2</span>
+                    <span class="badge">ISO 27001</span>
+                    <span class="badge">PCI DSS</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function sendOTP(event) {
+            event.preventDefault();
+            const mobile = document.getElementById('mobileNumber').value;
+            if (mobile.length === 10) {
+                document.getElementById('displayMobile').textContent = mobile;
+                document.getElementById('mobileStep').style.display = 'none';
+                document.getElementById('otpStep').style.display = 'block';
+            }
+        }
+
+        function verifyOTP(event) {
+            event.preventDefault();
+            const otp = document.getElementById('otpCode').value;
+            if (otp.length === 6) {
+                window.location.href = '/dashboard';
+            }
+        }
+
+        function resendOTP() {
+            const mobile = document.getElementById('displayMobile').textContent;
+        }
+
+        function backToMobile() {
+            document.getElementById('otpStep').style.display = 'none';
+            document.getElementById('mobileStep').style.display = 'block';
+            document.getElementById('mobileNumber').value = '';
+            document.getElementById('otpCode').value = '';
+        }
+
+        // Security: Disable right-click and back button
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || 
+                (e.ctrlKey && e.shiftKey && e.key === 'C') || (e.ctrlKey && e.key === 'u')) {
+                e.preventDefault();
+            }
+        });
+        
+        history.pushState(null, null, location.href);
+        window.onpopstate = function() {
+            history.go(1);
+        };
+
+        function openLogin() {
+            document.getElementById('loginModal').style.display = 'block';
+            document.getElementById('mobileStep').style.display = 'block';
+            document.getElementById('otpStep').style.display = 'none';
+        }
+        
+        function closeLogin() {
+            document.getElementById('loginModal').style.display = 'none';
+        }
+        
+        function watchDemo() {
+            alert('Demo video would open here');
+        }
+        
+        window.onclick = function(event) {
+            const modal = document.getElementById('loginModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

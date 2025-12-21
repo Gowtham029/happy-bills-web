@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Recharge - HappyBills</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/app-logo.png">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body class="recharge-page">
+    <div class="recharge-container">
+        <div class="recharge-header">
+            <img src="assets/app-logo.png" alt="HappyBills" class="recharge-logo">
+            <h1>Secure Plan Recharge</h1>
+            <p>Complete your subscription payment securely</p>
+            <button class="change-plan-btn" onclick="changePlan()">Change Plan</button>
+        </div>
+
+        <div class="recharge-content">
+            <div class="plan-summary-card">
+                <h2 id="planName"></h2>
+                <div class="plan-features" id="planFeatures"></div>
+                
+                <div class="price-breakdown">
+                    <div class="breakdown-item">
+                        <span>Plan Price:</span>
+                        <span id="basePrice"></span>
+                    </div>
+                    <div class="breakdown-item discount" id="discountRow" style="display: none;">
+                        <span>Discount:</span>
+                        <span id="discountAmount"></span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>SGST:</span>
+                        <span id="sgstAmount"></span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>CGST:</span>
+                        <span id="cgstAmount"></span>
+                    </div>
+                    <div class="breakdown-total">
+                        <span>Total Amount:</span>
+                        <span id="totalAmount"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="payment-form-card">
+                <form id="rechargeForm" class="secure-form">
+                    <div class="form-group">
+                        <label for="mobileNumber">Mobile Number</label>
+                        <div class="mobile-input">
+                            <span class="country-code">+91</span>
+                            <input type="tel" id="mobileNumber" placeholder="Enter 10-digit mobile number" pattern="[0-9]{10}" maxlength="10" required>
+                        </div>
+                    </div>
+                    
+                    <div class="security-info">
+                        <div class="security-badge">
+                            <span>🔒</span>
+                            <span>256-bit SSL Encrypted</span>
+                        </div>
+                        <div class="security-badge">
+                            <span>🛡️</span>
+                            <span>Secured by Razorpay</span>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="pay-button">
+                        <span>💳</span>
+                        Pay Securely
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        // Security measures - disable back button only during payment
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || 
+                (e.ctrlKey && e.shiftKey && e.key === 'C') || (e.ctrlKey && e.key === 'u')) {
+                e.preventDefault();
+            }
+        });
+
+        function goBack() {
+            window.location.href = 'subscription.html';
+        }
+
+        function changePlan() {
+            window.location.href = 'subscription.html';
+        }
+
+        // Encryption key (in production, use environment variable)
+        const ENCRYPTION_KEY = 'HappyBills2024SecureKey';
+
+        // Decrypt and load plan data
+        function loadPlanData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const encryptedData = urlParams.get('data');
+            
+            if (!encryptedData) {
+                window.location.href = 'subscription.html';
+                return;
+            }
+
+            try {
+                const decryptedBytes = CryptoJS.AES.decrypt(decodeURIComponent(encryptedData), ENCRYPTION_KEY);
+                const planData = JSON.parse(decryptedBytes.toString(CryptoJS.enc.Utf8));
+                
+                displayPlanData(planData);
+                window.currentPlan = planData;
+            } catch (error) {
+                console.error('Invalid plan data');
+                window.location.href = 'subscription.html';
+            }
+        }
+
+        function displayPlanData(plan) {
+            document.getElementById('planName').textContent = plan.nameEn;
+            document.getElementById('planFeatures').innerHTML = `
+                <div class="feature">✓ ${plan.billLimit} bills per month</div>
+                <div class="feature">✓ GST included</div>
+                <div class="feature">✓ 24/7 support</div>
+                <div class="feature">✓ Advanced analytics</div>
+            `;
+            
+            const basePrice = parseFloat(plan.price);
+            const discount = parseFloat(plan.discountPercent);
+            const discountAmount = (basePrice * discount) / 100;
+            const discountedPrice = basePrice - discountAmount;
+            const sgst = (discountedPrice * parseFloat(plan.sgstPercent)) / 100;
+            const cgst = (discountedPrice * parseFloat(plan.cgstPercent)) / 100;
+            const finalPrice = parseFloat(plan.finalPrice);
+            
+            document.getElementById('basePrice').textContent = `₹${basePrice.toFixed(2)}`;
+            
+            if (discount > 0) {
+                document.getElementById('discountRow').style.display = 'flex';
+                document.getElementById('discountAmount').textContent = `-₹${discountAmount.toFixed(2)}`;
+            }
+            
+            document.getElementById('sgstAmount').textContent = `₹${sgst.toFixed(2)}`;
+            document.getElementById('cgstAmount').textContent = `₹${cgst.toFixed(2)}`;
+            document.getElementById('totalAmount').textContent = `₹${finalPrice.toFixed(2)}`;
+        }
+
+        document.getElementById('rechargeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const mobile = document.getElementById('mobileNumber').value;
+            
+            if (mobile.length === 10 && window.currentPlan) {
+                initiatePayment(mobile);
+            }
+        });
+
+        function initiatePayment(mobile) {
+            // Disable back button only during payment
+            history.pushState(null, null, location.href);
+            window.onpopstate = function() {
+                history.go(1);
+            };
+            
+            const plan = window.currentPlan;
+            const options = {
+                key: 'rzp_test_RtlH3mV5nLIrI3',
+                amount: parseFloat(plan.finalPrice) * 100,
+                currency: 'INR',
+                name: 'HappyBills',
+                description: `${plan.planCode} Plan Recharge`,
+                handler: function(response) {
+                    processPaymentSuccess(mobile, response.razorpay_payment_id);
+                },
+                modal: {
+                    ondismiss: function() {
+                        // Re-enable back button if payment cancelled
+                        window.onpopstate = null;
+                    }
+                },
+                prefill: {
+                    contact: mobile
+                },
+                theme: {
+                    color: '#4285F4'
+                }
+            };
+            
+            const rzp = new Razorpay(options);
+            rzp.open();
+        }
+
+        async function processPaymentSuccess(mobile, paymentId) {
+            const plan = window.currentPlan;
+            
+            // Encrypt sensitive data
+            const paymentData = {
+                mobile: mobile,
+                planId: plan.id,
+                planCode: plan.planCode,
+                amount: plan.finalPrice,
+                paymentId: paymentId,
+                timestamp: new Date().toISOString()
+            };
+            
+            const encryptedPayload = CryptoJS.AES.encrypt(JSON.stringify(paymentData), ENCRYPTION_KEY).toString();
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/v1/subscription', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Encrypted': 'true'
+                    },
+                    body: JSON.stringify({ data: encryptedPayload })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    window.location.href = 'success.html?payment=' + encodeURIComponent(paymentId);
+                } else {
+                    alert('Payment verification failed. Please contact support.');
+                }
+            } catch (error) {
+                console.error('API Error:', error);
+                alert('Payment processing failed. Please contact support.');
+            }
+        }
+
+        function changePlan() {
+            window.location.href = 'subscription.html';
+        }
+
+        // Load plan data on page load
+        document.addEventListener('DOMContentLoaded', loadPlanData);
+    </script>
+</body>
+</html>

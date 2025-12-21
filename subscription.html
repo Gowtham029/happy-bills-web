@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Plans - HappyBills</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/app-logo.png">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <img src="assets/app-logo.png" alt="HappyBills" class="logo-image">
+                    <div class="logo-brand">
+                        <span class="brand-name">HappyBills</span>
+                        <span class="brand-tagline">Enterprise</span>
+                    </div>
+                </div>
+                <div class="nav-right">
+                    <ul class="nav-menu">
+                        <li><a href="index.html" class="nav-link">Home</a></li>
+                        <li><a href="subscription.html" class="nav-link active">Plans</a></li>
+                        <li><a href="contact.html" class="nav-link">Contact</a></li>
+                    </ul>
+                    <button class="login-btn" onclick="openLogin()">Login</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="pricing-hero">
+            <div class="container">
+                <div class="hero-badge">🏆 Industry Leading</div>
+                <h1 class="section-title">Choose Your <span class="gradient-text">Plan</span></h1>
+                <p class="section-subtitle">Simple pricing for food businesses of all sizes</p>
+            </div>
+        </section>
+
+        <section class="pricing">
+            <div class="container">
+                <div id="loadingPlans" class="loading">Loading plans...</div>
+                <div id="pricingCards" class="pricing-cards"></div>
+            </div>
+        </section>
+
+        <section class="compliance">
+            <div class="container">
+                <h2 class="section-title">Enterprise Security & Compliance</h2>
+                <div class="compliance-grid">
+                    <div class="compliance-card">
+                        <div class="compliance-icon">🛡️</div>
+                        <h4>SOC 2 Type II</h4>
+                        <p>Certified security controls and processes</p>
+                    </div>
+                    <div class="compliance-card">
+                        <div class="compliance-icon">🏆</div>
+                        <h4>ISO 27001</h4>
+                        <p>Information security management standards</p>
+                    </div>
+                    <div class="compliance-card">
+                        <div class="compliance-icon">💳</div>
+                        <h4>PCI DSS Level 1</h4>
+                        <p>Payment card industry compliance</p>
+                    </div>
+                    <div class="compliance-card">
+                        <div class="compliance-icon">🌍</div>
+                        <h4>GDPR Ready</h4>
+                        <p>European data protection compliance</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeLogin()">&times;</span>
+            <div class="login-form">
+                <img src="assets/app-logo.png" alt="HappyBills" class="login-logo">
+                <div id="mobileStep">
+                    <h2>Welcome Back</h2>
+                    <p>Enter your mobile number to continue</p>
+                    <form onsubmit="sendOTP(event)">
+                        <input type="tel" id="mobileNumber" placeholder="Mobile Number" pattern="[0-9]{10}" maxlength="10" required>
+                        <button type="submit" class="login-submit">Send OTP</button>
+                    </form>
+                </div>
+                <div id="otpStep" style="display: none;">
+                    <h2>Verify OTP</h2>
+                    <p>Enter the 6-digit code sent to <span id="displayMobile"></span></p>
+                    <form onsubmit="verifyOTP(event)">
+                        <input type="text" id="otpCode" placeholder="Enter OTP" pattern="[0-9]{6}" maxlength="6" required>
+                        <button type="submit" class="login-submit">Verify OTP</button>
+                    </form>
+                    <div class="login-footer">
+                        <a href="#" onclick="resendOTP()">Resend OTP</a>
+                        <span>•</span>
+                        <a href="#" onclick="backToMobile()">Change Number</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <img src="assets/app-logo.png" alt="HappyBills" class="logo-image">
+                        <span class="brand-name">HappyBills</span>
+                    </div>
+                    <p>Simple billing solution for food businesses of all sizes</p>
+                </div>
+                <div class="footer-links">
+                    <div class="link-group">
+                        <h4>Product</h4>
+                        <a href="#">Features</a>
+                        <a href="#">Security</a>
+                        <a href="#">API</a>
+                    </div>
+                    <div class="link-group">
+                        <h4>Company</h4>
+                        <a href="#">About</a>
+                        <a href="#">Careers</a>
+                        <a href="#">Press</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 HappyBills. All rights reserved.</p>
+                <div class="compliance-badges">
+                    <span class="badge">SOC 2</span>
+                    <span class="badge">ISO 27001</span>
+                    <span class="badge">PCI DSS</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Recharge Modal -->
+    <div id="rechargeModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeRecharge()">&times;</span>
+            <div class="recharge-form">
+                <div class="recharge-header">
+                    <img src="assets/app-logo.png" alt="HappyBills" class="recharge-logo">
+                    <h2>Plan Recharge</h2>
+                    <p class="recharge-subtitle">Complete your subscription payment</p>
+                </div>
+                
+                <div class="plan-summary">
+                    <div class="plan-info">
+                        <h3 id="rechargePlanName"></h3>
+                        <div class="plan-features" id="rechargePlanFeatures"></div>
+                    </div>
+                    
+                    <div class="price-breakdown">
+                        <div class="breakdown-row">
+                            <span>Plan Price:</span>
+                            <span id="planBasePrice"></span>
+                        </div>
+                        <div class="breakdown-row discount" id="discountRow" style="display: none;">
+                            <span>Discount:</span>
+                            <span id="discountAmount"></span>
+                        </div>
+                        <div class="breakdown-row">
+                            <span>SGST:</span>
+                            <span id="sgstAmount"></span>
+                        </div>
+                        <div class="breakdown-row">
+                            <span>CGST:</span>
+                            <span id="cgstAmount"></span>
+                        </div>
+                        <div class="breakdown-total">
+                            <span>Total Amount:</span>
+                            <span id="rechargeAmount"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <form onsubmit="processRecharge(event)" class="recharge-payment-form">
+                    <input type="hidden" id="rechargePlanId">
+                    <input type="hidden" id="rechargePlanCode">
+                    <input type="hidden" id="rechargePlanData">
+                    
+                    <div class="mobile-input-group">
+                        <label for="rechargeMobile">Mobile Number</label>
+                        <input type="tel" id="rechargeMobile" placeholder="Enter your mobile number" pattern="[0-9]{10}" maxlength="10" required>
+                    </div>
+                    
+                    <div class="payment-security">
+                        <div class="security-badge">
+                            <span class="security-icon">🔒</span>
+                            <span>Secured by Razorpay</span>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="recharge-btn">
+                        <span class="btn-icon">💳</span>
+                        Pay Securely
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script>
+        // const API_HOST = 'https://beneficently-impolite-fernanda.ngrok-free.dev';
+        const API_HOST = 'http://localhost:3000';
+        const API_ENDPOINT = '/api/v1/master/plans';
+
+        async function loadPlans() {
+            const loadingEl = document.getElementById('loadingPlans');
+            const cardsEl = document.getElementById('pricingCards');
+            
+            try {
+                const response = await fetch(API_HOST + API_ENDPOINT, {
+                    headers: {
+                        'ngrok-skip-browser-warning': 'true'
+                    }
+                });
+                const result = await response.json();
+                
+                loadingEl.style.display = 'none';
+                
+                if (result.data && result.data.length > 0) {
+                    window.plansData = result.data; // Store for recharge modal
+                    result.data.sort((a, b) => a.displayOrder - b.displayOrder);
+                    
+                    cardsEl.innerHTML = result.data.map(plan => `
+                        <div class="pricing-card ${plan.isPopular ? 'featured' : ''}">
+                            ${plan.isPopular ? '<div class="popular-badge">Most Popular</div>' : ''}
+                            <div class="card-header">
+                                <h3>${plan.nameEn}</h3>
+                                <div class="price">
+                                    <span class="currency">₹</span>
+                                    <span class="amount">${Math.round(parseFloat(plan.finalPrice))}</span>
+                                    <span class="period">/mo</span>
+                                </div>
+                                ${plan.discountPercent > 0 ? `
+                                    <div class="discount-badge">${plan.discountPercent}% OFF</div>
+                                    <div class="original-price">₹${parseFloat(plan.price).toFixed(2)}</div>
+                                ` : ''}
+                                <p>${plan.billLimit} bills per month</p>
+                            </div>
+                            <ul class="features-list">
+                                <li>✓ Up to ${plan.billLimit} transactions/month</li>
+                                <li>✓ GST included (${parseFloat(plan.sgstPercent) + parseFloat(plan.cgstPercent)}%)</li>
+                                <li>✓ 24/7 support</li>
+                                <li>✓ Advanced analytics</li>
+                                <li>✓ 99.9% uptime SLA</li>
+                            </ul>
+                            <button class="plan-btn ${plan.isPopular ? 'primary' : ''}" onclick="openRecharge('${plan.id}', '${plan.planCode}', '${plan.nameEn}', '${Math.round(parseFloat(plan.finalPrice))}')">
+                                ${plan.isPopular ? 'Get Started' : 'Subscribe'}
+                            </button>
+                        </div>
+                    `).join('');
+                } else {
+                    cardsEl.innerHTML = '<p class="no-plans">No plans available at the moment.</p>';
+                }
+            } catch (error) {
+                loadingEl.style.display = 'none';
+                cardsEl.innerHTML = '<p class="error-message">Failed to load plans. Please try again later.</p>';
+                console.error('Error loading plans:', error);
+            }
+        }
+
+        function openRecharge(planId, planCode, planName, amount) {
+            // Find the plan data from loaded plans
+            const planData = window.plansData?.find(p => p.id === planId);
+            
+            if (planData) {
+                // Encrypt plan data for secure transmission
+                const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(planData), 'HappyBills2024SecureKey').toString();
+                window.location.href = `recharge.html?data=${encodeURIComponent(encryptedData)}`;
+            }
+        }
+
+        function closeRecharge() {
+            document.getElementById('rechargeModal').style.display = 'none';
+            document.getElementById('rechargeMobile').value = '';
+        }
+
+        function processRecharge(event) {
+            event.preventDefault();
+            const mobile = document.getElementById('rechargeMobile').value;
+            const planId = document.getElementById('rechargePlanId').value;
+            const planCode = document.getElementById('rechargePlanCode').value;
+            const amount = document.getElementById('rechargeAmount').textContent.replace('₹', '');
+            
+            if (mobile.length === 10) {
+                initiatePayment(mobile, planId, planCode, amount);
+            }
+        }
+
+        function initiatePayment(mobile, planId, planCode, amount) {
+            const options = {
+                key: 'rzp_test_RtlH3mV5nLIrI3',
+                amount: amount * 100,
+                currency: 'INR',
+                name: 'HappyBills',
+                description: `${planCode} Plan Recharge`,
+                handler: function(response) {
+                    callSubscriptionAPI(mobile, planId, planCode, amount, response.razorpay_payment_id);
+                },
+                prefill: {
+                    contact: mobile
+                },
+                theme: {
+                    color: '#4285F4'
+                }
+            };
+            
+            const rzp = new Razorpay(options);
+            rzp.open();
+        }
+
+        async function callSubscriptionAPI(mobile, planId, planCode, amount, paymentId) {
+            try {
+                const response = await fetch(API_HOST + '/api/v1/subscription', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'ngrok-skip-browser-warning': 'true'
+                    },
+                    body: JSON.stringify({
+                        mobile: mobile,
+                        planId: planId,
+                        planCode: planCode,
+                        amount: amount,
+                        paymentId: paymentId
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('Recharge successful! Your plan is now active.');
+                    closeRecharge();
+                } else {
+                    alert('Recharge failed. Please try again.');
+                }
+            } catch (error) {
+                console.error('API Error:', error);
+                alert('Something went wrong. Please try again.');
+            }
+        }
+
+        function sendOTP(event) {
+            event.preventDefault();
+            const mobile = document.getElementById('mobileNumber').value;
+            if (mobile.length === 10) {
+                document.getElementById('displayMobile').textContent = mobile;
+                document.getElementById('mobileStep').style.display = 'none';
+                document.getElementById('otpStep').style.display = 'block';
+            }
+        }
+
+        function verifyOTP(event) {
+            event.preventDefault();
+            const otp = document.getElementById('otpCode').value;
+            if (otp.length === 6) {
+                window.location.href = '/dashboard';
+            }
+        }
+
+        function resendOTP() {
+            const mobile = document.getElementById('displayMobile').textContent;
+        }
+
+        function backToMobile() {
+            document.getElementById('otpStep').style.display = 'none';
+            document.getElementById('mobileStep').style.display = 'block';
+            document.getElementById('mobileNumber').value = '';
+            document.getElementById('otpCode').value = '';
+        }
+
+        function openLogin() {
+            document.getElementById('loginModal').style.display = 'block';
+            document.getElementById('mobileStep').style.display = 'block';
+            document.getElementById('otpStep').style.display = 'none';
+        }
+        
+        function closeLogin() {
+            document.getElementById('loginModal').style.display = 'none';
+        }
+        
+        window.onclick = function(event) {
+            const modal = document.getElementById('loginModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Security: Disable right-click and back button
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || 
+                (e.ctrlKey && e.shiftKey && e.key === 'C') || (e.ctrlKey && e.key === 'u')) {
+                e.preventDefault();
+            }
+        });
+        
+        history.pushState(null, null, location.href);
+        window.onpopstate = function() {
+            history.go(1);
+        };
+
+        // Load plans on page load
+        document.addEventListener('DOMContentLoaded', loadPlans);
+    </script>
+</body>
+</html>
