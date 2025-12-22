@@ -210,7 +210,7 @@
             const encryptedPayload = CryptoJS.AES.encrypt(JSON.stringify(paymentData), ENCRYPTION_KEY).toString();
             
             try {
-                const response = await fetch('http://localhost:3000/api/v1/subscription', {
+                const response = await fetch('https://happybills.in/api/v1/subscription', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
