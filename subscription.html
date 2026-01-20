@@ -241,38 +241,49 @@
                 
                 loadingEl.style.display = 'none';
                 
-                if (result.data && result.data.length > 0) {
-                    window.plansData = result.data; // Store for recharge modal
-                    result.data.sort((a, b) => a.displayOrder - b.displayOrder);
+                const plans = result.data || result;
+                
+                if (plans && Array.isArray(plans) && plans.length > 0) {
+                    window.plansData = plans;
+                    plans.sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
                     
-                    cardsEl.innerHTML = result.data.map(plan => `
+                    cardsEl.innerHTML = plans.map(plan => {
+                        const price = parseFloat(plan.finalPrice || plan.price || 0);
+                        const originalPrice = parseFloat(plan.price || 0);
+                        const discount = parseFloat(plan.discountPercent || 0);
+                        const billLimit = plan.billLimit || 'Unlimited';
+                        const sgst = parseFloat(plan.sgstPercent || 0);
+                        const cgst = parseFloat(plan.cgstPercent || 0);
+                        const totalGst = sgst + cgst;
+                        
+                        return `
                         <div class="pricing-card ${plan.isPopular ? 'featured' : ''}">
                             ${plan.isPopular ? '<div class="popular-badge">Most Popular</div>' : ''}
                             <div class="card-header">
-                                <h3>${plan.nameEn}</h3>
+                                <h3>${plan.nameEn || plan.name || 'Plan'}</h3>
                                 <div class="price">
                                     <span class="currency">₹</span>
-                                    <span class="amount">${Math.round(parseFloat(plan.finalPrice))}</span>
+                                    <span class="amount">${Math.round(price)}</span>
                                     <span class="period">/mo</span>
                                 </div>
-                                ${plan.discountPercent > 0 ? `
-                                    <div class="discount-badge">${plan.discountPercent}% OFF</div>
-                                    <div class="original-price">₹${parseFloat(plan.price).toFixed(2)}</div>
+                                ${discount > 0 ? `
+                                    <div class="discount-badge">${discount}% OFF</div>
+                                    <div class="original-price">₹${originalPrice.toFixed(2)}</div>
                                 ` : ''}
-                                <p>${plan.billLimit} bills per month</p>
+                                <p>${billLimit} bills per month</p>
                             </div>
                             <ul class="features-list">
-                                <li>✓ Up to ${plan.billLimit} transactions/month</li>
-                                <li>✓ GST included (${parseFloat(plan.sgstPercent) + parseFloat(plan.cgstPercent)}%)</li>
+                                <li>✓ Up to ${billLimit} transactions/month</li>
+                                <li>✓ GST included (${totalGst}%)</li>
                                 <li>✓ 24/7 support</li>
                                 <li>✓ Advanced analytics</li>
                                 <li>✓ 99.9% uptime SLA</li>
                             </ul>
-                            <button class="plan-btn ${plan.isPopular ? 'primary' : ''}" onclick="openRecharge('${plan.id}', '${plan.planCode}', '${plan.nameEn}', '${Math.round(parseFloat(plan.finalPrice))}')">
+                            <button class="plan-btn ${plan.isPopular ? 'primary' : ''}" onclick="openRecharge('${plan.id}', '${plan.planCode}', '${plan.nameEn || plan.name}', '${Math.round(price)}')">
                                 ${plan.isPopular ? 'Get Started' : 'Subscribe'}
                             </button>
                         </div>
-                    `).join('');
+                    `}).join('');
                 } else {
                     cardsEl.innerHTML = '<p class="no-plans">No plans available at the moment.</p>';
                 }
